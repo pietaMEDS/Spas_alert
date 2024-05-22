@@ -1,10 +1,10 @@
-<script setup>
-import Header from './components/header/main.vue'
-import { RouterView } from 'vue-router'
-</script>
-
-<template>
-  <section data-bs-version="5.1" class="menu menu6 cid-ucoPkhxvtB" once="menu" id="menu06-1">
+<script>
+const Header = {
+  data() {
+    return {}
+  },
+  template: `
+        <section data-bs-version="5.1" class="menu menu6 cid-ucoPkhxvtB" once="menu" id="menu06-1">
         <nav class="navbar navbar-dropdown opacityScrollOff navbar-fixed-top navbar-expand-lg">
           <div class="container">
             <div class="navbar-brand">
@@ -61,96 +61,8 @@ import { RouterView } from 'vue-router'
           </div>
         </nav>
       </section>
-  <RouterView />
-</template>
-
-<style scoped>
-
-body{
-  overflow-x:hidden;
+    `
 }
 
-.navbar {
-  z-index: 50;
-  position: fixed;
-  width: 100%;
-  background: rgb(57, 96, 255);
-  height: 6svh;
-}
-.navbar-logo {
-  position: absolute;
-  top: 50%;
-  left: 1%;
-  transform: translateY(-50%);
-}
-.menu {
-  height: 6svh;
-}
-.display-4 {
-  font-weight: normal;
-}
-#navbarSupportedContent {
-  display: flex;
-  justify-content: right;
-}
-#navbarSupportedContent ul {
-  width: 50%;
-  display: flex;
-  justify-content: space-around;
-}
-#naming {
-  font-size: calc(0.5rem + 2vw);
-}
-
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  text-align: center;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-}
-</style>
+export default Header
+</script>

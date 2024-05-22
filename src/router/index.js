@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,6 +22,21 @@ const router = createRouter({
       path: '/forum/:id',
       name: 'forum',
       component: () => import('../components/forum/ForumPoint.vue')
+    },
+    {
+      path: '/404',
+      name: 'notfoundpage',
+      component: () => import('../components/ErrPages/404NotFound.vue')
+    },
+    {
+      path: '/:catchAll(.*)',
+      name: 'notfoundredirect',
+      redirect: '/404'
+    },
+    {
+      path: '/auth',
+      name: 'Authentification',
+      component: () => import('../components/profile/auth.vue')
     }
   ]
 })
