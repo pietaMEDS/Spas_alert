@@ -1,15 +1,16 @@
 import { defineStore } from 'pinia'
 
 export const useLoggerStore = defineStore('LoggerStore', {
-  Logger: () => {
+  state: () => {
     return {
-      isLogged: false
+      isLogged: false,
+      publicKey: ""
     }
   },
   actions: {
-    auth() {
-      this.isLogged = true
+    auth(key) {
+      this.isLogged = true;
+      this.publicKey = key;
     }
   }
-}
-)
+})

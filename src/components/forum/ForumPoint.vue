@@ -9,33 +9,57 @@ export default {
       forumData: '',
       forumMessages: [],
       tags: [],
-      parseErr: null
+      parseErr: null,
+      TempName: 'Undefined'
     }
   },
   methods: {
     async updateMessages() {
       try {
-        const response = await axios.get('/src/Data/messages.json')
-        if (typeof response.data == 'object') {
-          this.parseErr = false
-          let responseData = []
-          for (let index = 1; index < Object.keys(response.data).length + 1; index++) {
-            if (response.data[index].message_From == this.forumId) {
-              responseData.push(response.data[index])
+        axios
+          .get('https://spas-alert.local', {
+            params: {
+              Action: 'get',
+              Table: 'messages',
+              Advanced: 'where message_From = ' + this.forumId + ' and status = 1'
             }
+          })
+          .then((response) => {
+            try {
+              this.forumMessages = response.data
+            } catch (error) {
+              console.error('Something went wrong')
+            }
+          })
+          .catch((error) => {
+            this.forumMessages = {
+              1: {
+                id: null,
+                creator: null,
+                message_From: null,
+                message_To: null,
+                text: '<h1>Something went wrong!<h1>',
+                Created: null,
+                status: null
+              }
+            }
+          })
+      } catch (error) {}
+    },
+    GetUser(userID) {
+      axios
+        .get('https://spas-alert.local', {
+          params: {
+            Action: 'get',
+            Table: 'users',
+            Advanced: 'where id = ' + userID
           }
-          this.forumMessages = responseData
-        } else {
-          try {
-            this.forumsDataList = JSON.parse(response.data)
-          } catch (error) {
-            this.parseErr = error
-          }
-        }
-      } catch (error) {
-        this.forumData = null
-        console.error(error)
-      }
+        })
+        .then((response) => {
+          this.TempName = response.data[0].name
+        })
+
+      return this.TempName
     }
   },
   async created() {
@@ -80,7 +104,7 @@ export default {
 
   <template v-for="(item, index) in this.forumMessages" :key="index">
     <div>
-      <div>User: {{ item.creator }}</div>
+      <div>User: {{ GetUser(item.creator) }}</div>
       <div>message: {{ item.text }}</div>
     </div>
   </template>

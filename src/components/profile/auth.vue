@@ -1,29 +1,61 @@
 <script>
+import axios from 'axios'
 import { useLoggerStore } from '@/stores/Auth.js'
 
 const LoggerStore = useLoggerStore()
-LoggerStore.$patch({ isLogged: false })
-LoggerStore.auth()
 
 export default {
   data() {
     return {
       login: '',
-      password: ''
+      password: '',
+      errorMessage: ""
     }
   },
   methods: {
     submit() {
-      
+      //identification
+      axios
+          .get('https://spas-alert.local', {
+            params: {
+              Action: 'get',
+              Table: 'users',
+              Advanced: 'where login = "' + this.login + '"'
+            }
+          })
+          .then((response) => {
+              if (response.data.length > 0) {
+                //authentification
+                axios.get('https://spas-alert.local', {
+            params: {
+              Action: 'auth',
+              CheckData: this.password,
+              Advanced: 'where login = "' + this.login + '"'
+            }
+          })
+          .then((response) => {
+              LoggerStore.auth(response.data.key);
+              this.$router.push('/forum')
+          })
+              } else {
+                
+              }
+          })
+
+      LoggerStore.auth()
     }
-  }
+  },
 }
+
 </script>
 
 <template>
   <div id="auth-page">
     <div class="login-root">
-      <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh; flex-grow: 1">
+      <div
+        class="box-root flex-flex flex-direction--column"
+        style="min-height: 100vh; flex-grow: 1"
+      >
         <div class="loginbackground box-background--white padding-top--64">
           <div class="loginbackground-gridContainer">
             <div class="box-root flex-flex" style="grid-area: top / start / 8 / end">
@@ -99,7 +131,7 @@ export default {
                 <span class="padding-bottom--15">Войдите в свой профиль</span>
                 <div class="form" id="stripe-login">
                   <div class="field padding-bottom--24">
-                    <label for="email">Почта</label>
+                    <label for="email">Логин</label>
                     <input v-model="login" type="email" name="email" />
                   </div>
                   <div class="field padding-bottom--24">
@@ -148,7 +180,7 @@ export default {
     Ubuntu,
     sans-serif;
 }
-#menu06-1{
+#menu06-1 {
   position: absolute;
   left: 0;
   margin-bottom: 15%;
