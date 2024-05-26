@@ -9,42 +9,64 @@ export default {
     return {
       login: '',
       password: '',
-      errorMessage: ''
+      errorMessage: '',
+      displayName: '',
+      fullName: '',
+      addres: '',
+      phone: '',
+      ret_password: ''
     }
   },
   methods: {
     submit() {
-      //identification
+      //  Validation
+
+      if (this.login.length < 6) {
+        this.errorMessage = 'Длинна логина не должна быть меньше 6'
+        return ''
+      } else if (this.displayName < 2) {
+        this.errorMessage = 'Длинна отоброжаемого имени не должна быть меньше 2'
+        return
+      } else if (this.fullName < 5) {
+        this.errorMessage = 'Длинна полного имени не должна быть меньше 5'
+        return
+      } else if (this.addres < 3) {
+        this.errorMessage = 'Длинна Города не должна быть меньше 3'
+        return
+      } else if (this.phone < 11) {
+        this.errorMessage = 'Не валидный номер телефона'
+        return
+      } else if (this.password != this.ret_password) {
+        this.errorMessage = 'Пароли не совпадают'
+        return
+      }
+
+      this.errorMessage = 'Ожидайте..'
+
+      // Create user
+
       axios
         .get('https://spas-alert.local', {
           params: {
-            Action: 'get',
+            Action: 'create',
             Table: 'users',
-            Advanced: 'where login = "' + this.login + '"'
+            login: this.login,
+            password: this.password,
+            displayName: this.displayName,
+            fullName: this.fullName,
+            addres: this.addres,
+            phone: this.phone
           }
         })
         .then((response) => {
-          if (response.data.length > 0) {
-            //authentification
-            axios
-              .get('https://spas-alert.local', {
-                params: {
-                  Action: 'auth',
-                  CheckData: this.password,
-                  Advanced: 'where login = "' + this.login + '"'
-                }
-              })
-              .then((response) => {
-                console.log(response.data)
-                if (response.data.key) {
-                  LoggerStore.auth(response.data.key)
-                  this.$router.push('/forum')
-                } else {
-                  this.errorMessage = 'Что то пошло не так!'
-                }
-              })
+          if (response.data.length == 11) {
+            LoggerStore.auth(response.data)
+            this.$router.push('/')
+          } else if (response.data) {
+            this.errorMessage = response.data.Error
           } else {
-            this.errorMessage = 'Неправильный логин или пароль!'
+            this.errorMessage =
+              'Произошла ошибка! Попробуйте ещё раз или свяжитесь с тех.поддержкой!'
           }
         })
     }
@@ -131,26 +153,44 @@ export default {
           <div class="formbg-outer">
             <div class="formbg">
               <div class="formbg-inner padding-horizontal--48">
-                <span class="padding-bottom--15">Войдите в свой профиль</span>
+                <span class="padding-bottom--15">Создайте свой профиль</span>
                 <div class="form" id="stripe-login">
                   <div class="field padding-bottom--24">
-                    <label for="email">Логин</label>
-                    <input v-model="login" type="email" name="email" />
+                    <label for="displayName">Отображаемое имя</label>
+                    <input v-model="displayName" type="text" name="displayName" />
+                  </div>
+                  <div class="field padding-bottom--24">
+                    <label for="fullName">Полное имя</label>
+                    <input v-model="fullName" type="text" name="fullName" />
+                  </div>
+                  <div class="field padding-bottom--24">
+                    <label for="login">Логин</label>
+                    <input v-model="login" type="text" name="login" />
+                  </div>
+                  <div class="field padding-bottom--24">
+                    <label for="addres"
+                      >Ваш город
+                      <span style="font-size: 0.5lh" class="text-muted">Это важно!!</span></label
+                    >
+                    <input v-model="addres" type="text" name="addres" />
+                  </div>
+                  <div class="field padding-bottom--24">
+                    <label for="phone">Номер телефона</label>
+                    <input v-model="phone" type="number" name="phone" />
                   </div>
                   <div class="field padding-bottom--24">
                     <div class="grid--50-50">
                       <label for="password">Пароль</label>
-                      <div class="reset-pass">
-                        <router-link to="/"><a>Забыли пароль?</a></router-link>
-                      </div>
                     </div>
                     <input v-model="password" type="password" name="password" />
                   </div>
-                  <div class="field field-checkbox padding-bottom--24 flex-flex align-center">
-                    <label for="checkbox">
-                      <input type="checkbox" name="checkbox" /> Остаться в системе
-                    </label>
+                  <div class="field padding-bottom--24">
+                    <div class="grid--50-50">
+                      <label for="password">Повторите пароль</label>
+                    </div>
+                    <input v-model="ret_password" type="password" name="password" />
                   </div>
+                  <div class="field field-checkbox padding-bottom--24 flex-flex align-center"></div>
                   <div class="field padding-bottom--24 submitdiv">
                     <button @click="submit" class="btn submit">Продолжить</button>
                   </div>
@@ -158,14 +198,39 @@ export default {
               </div>
             </div>
             <div class="footer-link padding-top--24">
-              <span
-                >Не зарегестрировались?
-                <router-link to="/registration">Зарегестрируйтесь!</router-link></span
-              >
+              <span>Уже есть аккаунт? <router-link to="/auth">Авторизуйся!</router-link></span>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div
+    v-if="errorMessage"
+    style="
+      width: 100%;
+      position: absolute;
+      top: 10%;
+      bottom: auto;
+      display: flex;
+      justify-content: center;
+    "
+  >
+    <div
+      style="
+        padding: 1lh;
+        z-index: 300;
+        border-radius: 5px;
+        width: 5lw;
+        background-color: rgba(253, 62, 62, 0.852);
+        display: flex;
+        justify-content: center;
+      "
+    >
+      <span>
+        {{ errorMessage }}
+      </span>
     </div>
   </div>
 </template>

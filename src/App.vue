@@ -1,9 +1,32 @@
 <script setup>
-import Header from './components/header/main.vue'
 import { RouterView } from 'vue-router'
 import { useLoggerStore } from '@/stores/Auth.js'
-
+import Header from './components/header/main.vue'
 const LoggerStore = useLoggerStore()
+
+function GetAuth(param) {
+  switch (param) {
+    case 'name':
+      if (LoggerStore.isLogged) {
+        return 'Профиль'
+      } else {
+        return 'Авторизация'
+      }
+      break
+
+    case 'path':
+      if (LoggerStore.isLogged) {
+        return '/profile'
+      } else {
+        return '/auth'
+      }
+      break
+
+    default:
+      return 'Undefined'
+      break
+  }
+}
 </script>
 
 <template>
@@ -55,11 +78,9 @@ const LoggerStore = useLoggerStore()
               >
             </li>
             <li class="nav-item">
-              <router-link
-                to="{ name='profile', params: {id:user.id} }"
-                class="nav-link link text-black display-4"
-                >Профиль</router-link
-              >
+              <router-link :to="GetAuth('path')" class="nav-link link text-black display-4">{{
+                GetAuth('name')
+              }}</router-link>
             </li>
           </ul>
           <div class="navbar-buttons mbr-section-btn"></div>

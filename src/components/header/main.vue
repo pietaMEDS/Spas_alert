@@ -1,7 +1,20 @@
 <script>
+import { useLoggerStore } from '@/stores/Auth.js'
+
 const Header = {
   data() {
     return {}
+  },
+  created: {
+    create() {
+      const LoggerStore = useLoggerStore()
+    }
+  },
+  computed: {
+    getauth() {
+      // create()
+      console.log(LoggerStore.auth)
+    }
   },
   template: `
         <section data-bs-version="5.1" class="menu menu6 cid-ucoPkhxvtB" once="menu" id="menu06-1">
@@ -51,7 +64,7 @@ const Header = {
                   <router-link
                     to="{ name='profile', params: {id:user.id} }"
                     class="nav-link link text-black display-4"
-                    >Профиль</router-link
+                    >POPOPO</router-link
                   >
                 </li>
               </ul>

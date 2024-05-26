@@ -4,13 +4,13 @@ export const useLoggerStore = defineStore('LoggerStore', {
   state: () => {
     return {
       isLogged: false,
-      publicKey: ""
+      publicKey: ''
     }
   },
   actions: {
     auth(key) {
-      this.isLogged = true;
-      this.publicKey = key;
+      this.isLogged = true
+      this.publicKey = key
     }
   }
 })

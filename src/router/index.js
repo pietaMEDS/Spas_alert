@@ -24,6 +24,16 @@ const router = createRouter({
       component: () => import('../components/forum/ForumPoint.vue')
     },
     {
+      path: '/forum/edit/:id',
+      name: 'edit',
+      component: () => import('../components/forum/ForumPointEdit.vue')
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('../components/adminPanel/admin.vue')
+    },
+    {
       path: '/404',
       name: 'notfoundpage',
       component: () => import('../components/ErrPages/404NotFound.vue')
@@ -37,6 +47,16 @@ const router = createRouter({
       path: '/auth',
       name: 'Authentification',
       component: () => import('../components/profile/auth.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../components/profile/profile.vue')
+    },
+    {
+      path: '/registration',
+      name: 'Registration',
+      component: () => import('../components/profile/registration.vue')
     }
   ]
 })
